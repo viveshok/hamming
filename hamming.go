@@ -3,13 +3,18 @@
 
 package main
 
+/*
+#include "hamming.c"
+*/
+import "C"
+
 import "fmt"
 import "math/rand"
 import "time"
 
-func popcount(input int64) uint8 {
+func popcount(input uint64) uint8 {
 
-	var mask1, mask2, mask3, mask4, mask5, mask6 int64
+	var mask1, mask2, mask3, mask4, mask5, mask6 uint64
 	mask1 = 6148914691236517205 // 01010101...
 	mask2 = 3689348814741910323 // 00110011...
 	mask3 = 1085102592571150095 // 00001111...
@@ -28,17 +33,28 @@ func popcount(input int64) uint8 {
 }
 
 func main() {
+
 	var sampleSize int = 2000000
-	randoms := make([]int64, sampleSize)
+	randoms := make([]uint64, sampleSize)
 	for i := 0; i < sampleSize; i++ {
-		randoms[i] = rand.Int63()
+		randoms[i] = uint64(rand.Int63())
 	}
 
+	// using native code:
 	var weight uint64
 	start := time.Now()
-	for i := 0; i < sampleSize; i++ {
-		weight += uint64(popcount(randoms[i]))
+	for _, v := range randoms {
+		weight += uint64(popcount(v))
 	}
 	elapsed := time.Since(start)
-	fmt.Printf("took %s\n", elapsed)
+	fmt.Printf("Native Go took %s, popcount: %v\n", elapsed, weight)
+
+	// calling raw C:
+	weight = 0
+	start = time.Now()
+	for _, v := range randoms {
+		weight += uint64(C.weight(C.ulonglong(v)))
+	}
+	elapsed = time.Since(start)
+	fmt.Printf("Calling C function from Go (casting every time) took %s, popcount: %v\n", elapsed, weight)
 }
