@@ -5,13 +5,16 @@ sandbox to play with and benchmark bit operations and interop in C, Erlang and G
 #### how to run (on Linux)
 
 For Golang:
+
     $ go run hamming.go
 
 For C:
+
     $ gcc -o hamming.out main.c hamming.c
     $ ./hamming.out
 
 For Erlang:
+
     $ gcc -o hamming_nif.so -fpic -shared hamming.c hamming_nif.c -I/usr/lib/erlang/erts-5.10.4/include
     $ erlc hamming.erl benchmark.erl
     $ erl
