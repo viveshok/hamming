@@ -10,7 +10,7 @@ For Golang:
 
 For C:
 
-    $ gcc -o hamming.out main.c hamming.c
+    $ gcc -Wall -W -g hamming.c main.c -lrt -O3 -o hamming.out
     $ ./hamming.out
 
 For Erlang:
